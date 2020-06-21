@@ -30,7 +30,6 @@ export default function App() {
         return item;
       }
     });
-    // alert(JSON.stringify(updatedRepositories))
     setRepositories(updatedRepositories);
   }
 
