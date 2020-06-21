@@ -13,16 +13,16 @@ import {
 
 export default function App() {
   const [repositories, setRepositories] = useState([]);
-  const [repositories2, setRepositories2] = useState([]);
+  const [repositoryLike, setRepositoryLike] = useState([]);
 
   useEffect(() => {
     api.get('repositories').then(response => {
       setRepositories(response.data);
     })
-  }, [repositories2]);
+  }, [repositoryLike]);
 
   async function handleLikeRepository(id) {
-    setRepositories2(await api.post(`repositories/${id}/like`));
+    setRepositoryLike(await api.post(`repositories/${id}/like`));
   }
 
   return (
