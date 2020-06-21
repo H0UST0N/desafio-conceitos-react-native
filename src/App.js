@@ -10,19 +10,28 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
+import { toJSON } from '@testing-library/react-native';
 
 export default function App() {
   const [repositories, setRepositories] = useState([]);
-  const [repositoryLike, setRepositoryLike] = useState([]);
 
   useEffect(() => {
     api.get('repositories').then(response => {
       setRepositories(response.data);
     })
-  }, [repositoryLike]);
+  }, []);
 
   async function handleLikeRepository(id) {
-    setRepositoryLike(await api.post(`repositories/${id}/like`));
+    const updatedRepository = await api.post(`repositories/${id}/like`);
+    const updatedRepositories = repositories.map(item => {
+      if (item.id === id) {
+        return updatedRepository.data;
+      }else {
+        return item;
+      }
+    });
+    // alert(JSON.stringify(updatedRepositories))
+    setRepositories(updatedRepositories);
   }
 
   return (
@@ -36,11 +45,11 @@ export default function App() {
             <View key={repository.id} style={styles.repositoryContainer}>
               <Text style={styles.repository}>{repository.title}</Text>
               <View style={styles.techsContainer}>
-                {repository.techs.map(tech => (
+                {repository.techs && (repository.techs.map(tech => (
                   <Text key={tech} style={styles.tech}>
                     {tech}
                   </Text>
-                ))}
+                )))}
               </View>
 
               <View style={styles.likesContainer}>
@@ -48,7 +57,7 @@ export default function App() {
                   style={styles.likeText}
                   testID={`repository-likes-${repository.id}`}
                 >
-                  {repository.likes > 1 ? `${repository.likes} curtidas` : repository.likes === 1 ? `${repository.likes} curtida` : repository.likes}
+                  {repository.likes}{repository.likes > 1 ? ' curtidas' : ' curtida'}
                 </Text>
               </View>
 
